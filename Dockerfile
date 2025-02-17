@@ -1,18 +1,15 @@
 FROM ubuntu:16.04
-MAINTAINER Your Name <your.email@example.com>
+MAINTAINER Guillaume J. Charmes <guillaume@charmes.net>
 
-# Install dependencies
 RUN apt-get update -qq && \
-    apt-get install -qqy automake libcurl4-openssl-dev git make gcc && \
-    # Clone the cpuminer repository and build it
-    git clone https://github.com/pooler/cpuminer && \
-    cd cpuminer && \
-    ./autogen.sh && \
+    apt-get install -qqy automake libcurl4-openssl-dev git make gcc
+
+WORKDIR /app
+RUN git clone https://github.com/pooler/cpuminer.git
+
+WORKDIR /app/cpuminer
+RUN ./autogen.sh && \
     ./configure CFLAGS="-O3" && \
     make
 
-# Set working directory
-WORKDIR /cpuminer
-
-# Start mining with provided arguments
 ENTRYPOINT ["./minerd"]
